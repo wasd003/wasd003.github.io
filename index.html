@@ -43,7 +43,7 @@
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="" class="js-avatar">
+			<img src="me.png" class="js-avatar">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href="/">wasd003</a></h1>
@@ -95,7 +95,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="" class="js-avatar">
+				<img src="me.png" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author">wasd003</h1>
@@ -140,39 +140,55 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-google kickstart H组第2题--2-color解法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/12/hello-world/">Hello World</a>
+      <a class="article-title" href="/2020/05/28/google%20kickstart%20H%E7%BB%84%E7%AC%AC2%E9%A2%98--2-color%E8%A7%A3%E6%B3%95/">google kickstart H组第2题--2-color解法</a>
     </h1>
   
 
         
-        <a href="/2020/01/12/hello-world/" class="archive-article-date">
-  	<time datetime="2020-01-12T00:04:19.874Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-12</time>
+        <a href="/2020/05/28/google%20kickstart%20H%E7%BB%84%E7%AC%AC2%E9%A2%98--2-color%E8%A7%A3%E6%B3%95/" class="archive-article-date">
+  	<time datetime="2020-05-28T10:10:59.283Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+        <h1 id="1-2-Color"><a href="#1-2-Color" class="headerlink" title="1. 2-Color"></a>1. 2-Color</h1><p>2-color是一种求解两布尔变量约束方程组的方法，通过将原问题建图，涂色来解决问题。  </p>
+<h2 id="1-1-约束种类"><a href="#1-1-约束种类" class="headerlink" title="1.1 约束种类"></a>1.1 约束种类</h2><p>2-color问题中只涉及两种约束：  </p>
+<ul>
+<li>a ^ b == 0(相吸)</li>
+<li>a ^ b ==1(互斥)</li>
+</ul>
+<h2 id="1-2-转化为图"><a href="#1-2-转化为图" class="headerlink" title="1.2 转化为图"></a>1.2 转化为图</h2><ul>
+<li>两个变量之间如果存在约束关系也就是对应图上的两个点之间有边</li>
+<li>将选或不选看成是把图中的节点涂成黑色或白色</li>
+<li>相吸则表示同色，互斥则表示颜色相反</li>
+</ul>
+<h2 id="1-3-实现"><a href="#1-3-实现" class="headerlink" title="1.3 实现"></a>1.3 实现</h2><p>实现需要以下数据结构：  </p>
+<ul>
+<li>用来存图的g数组</li>
+<li>用来记录约束的constraint数组</li>
+<li>用来记录访问情况的vis数组</li>
+</ul>
+<p>模板：  </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> cur, <span class="keyword">int</span> color)</span></span>&#123;<span class="comment">//从“当前点涂成color”这个状态开始搜</span></span><br><span class="line">    vis[cur] = <span class="literal">true</span>;<span class="comment">//首先标记好当前点已经搜过</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> nxt : g[cur])&#123;</span><br><span class="line">        <span class="keyword">if</span>(vis[nxt]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span>(constraint[cur][nxt] == <span class="number">1</span>)&#123;<span class="comment">//互斥</span></span><br><span class="line">            dfs(nxt, color ^ <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> dfs(nxt, color);<span class="comment">//相吸</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(遍历存储所有点的集合)&#123;</span><br><span class="line">        <span class="keyword">if</span>(vis[i]) <span class="keyword">continue</span>;</span><br><span class="line">        dfs(i， <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>根据上面的模板着重谈两件事情：  </p>
+<ol>
+<li>对于搜索过程的直观认识：每一次dfs会把一个连通分量中的所有点搜掉，但是图中很可能有多个连通分量，因此需要多次调用dfs。</li>
+<li>在dfs中有<code>if(vis[nxt]) continue;</code>。这一句的前提是存在涂色方案，如果不存在涂色方案。那么有可能已经涂色的nxt点和cur点之间的颜色不满足constraint，也就是涂色方案不自洽。</li>
+</ol>
+<h1 id="2-Diagonal-Puzzle"><a href="#2-Diagonal-Puzzle" class="headerlink" title="2. Diagonal Puzzle"></a>2. Diagonal Puzzle</h1><p>回到Diagonal Puzzle这个问题上来，有了2-color的背景知识，这个题目就很简单了。每条对角线要么不翻转，要么翻转一次(翻转多次没有意义)。因此可以把对角线的翻转/不翻转对应到一个bool变量。对于每一个点，如果它是<code>.</code>，那么两条对角线有且只有一个能翻转，如果是’#’，两条对角线要么都不翻转，要么都翻转。因此遍历一遍矩阵就可以得到一系列的两变量bool方程组，可以采用two-color求解。    </p>
+<p>代码：  </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">int</span> T;</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; g[N];<span class="comment">//存图</span></span><br><span class="line"><span class="keyword">int</span> constraint[N][N];<span class="comment">//记录约束</span></span><br><span class="line"><span class="keyword">bool</span> vis[N];<span class="comment">//记录访问情况</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> cur, <span class="keyword">int</span> &amp;black, <span class="keyword">int</span> &amp;white, <span class="keyword">int</span> color)</span></span>&#123;<span class="comment">//0黑1白</span></span><br><span class="line">    color? white++ : black++;</span><br><span class="line">    vis[cur] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> nxt : g[cur])&#123;</span><br><span class="line">        <span class="keyword">if</span>(vis[nxt]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span>(constraint[cur][nxt] == <span class="number">1</span>)&#123;</span><br><span class="line">            dfs(nxt, black, white, color ^ <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> dfs(nxt, black, white, color);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span> * n - <span class="number">2</span>; i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(vis[i]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">int</span> black = <span class="number">0</span>, white = <span class="number">0</span>;</span><br><span class="line">        dfs(i, black, white, <span class="number">1</span>);</span><br><span class="line">        ans += <span class="built_in">min</span>(black, white);<span class="comment">//选择black和white中较小的一个作为翻转的对角线条数</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(constraint, <span class="number">0</span>, <span class="keyword">sizeof</span> constraint);</span><br><span class="line">    <span class="built_in">memset</span>(vis, <span class="literal">false</span>, <span class="keyword">sizeof</span> vis);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) g[i].<span class="built_in">clear</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; T;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> kase = <span class="number">1</span>; kase &lt;= T; kase++)&#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">        init();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">                <span class="keyword">char</span> ch;</span><br><span class="line">                <span class="built_in">cin</span> &gt;&gt; ch;</span><br><span class="line">                <span class="keyword">int</span> z = i + j, f = i - j + <span class="number">3</span> * n - <span class="number">2</span>;<span class="comment">//对角线的表示</span></span><br><span class="line">                g[z].push_back(f);<span class="comment">//有约束关系表现为图上连边</span></span><br><span class="line">                g[f].push_back(z);</span><br><span class="line">                <span class="keyword">if</span>(ch == <span class="string">'.'</span>)&#123;<span class="comment">//0表示相吸，1表示互斥</span></span><br><span class="line">                    constraint[z][f] = constraint[f][z] = <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Case #%d: "</span>, kase);</span><br><span class="line">        solve();</span><br><span class="line">    &#125;</span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 
       
 
@@ -185,7 +201,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/12/hello-world/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/05/28/google%20kickstart%20H%E7%BB%84%E7%AC%AC2%E9%A2%98--2-color%E8%A7%A3%E6%B3%95/">展开全文 >></a>
         </p>
       
 
